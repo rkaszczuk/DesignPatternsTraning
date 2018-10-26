@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 
 namespace LeasingSystemToRefactor.Parser
 {
-    public class XMLParser
+    public class XMLParser : ISerializer
     {
         public string Parse<T>(T obj)
         {

@@ -51,21 +51,5 @@ namespace LeasingSystemToRefactor
             }
         }
         
-
-        public string GetOfferCSV(string delimiter)
-        {
-            var parser = new CSVParser(delimiter);
-            return parser.Parse(this);
-        }
-        public string GetOfferJson(JsonSerializerSettings jsonSerializerSettings)
-        {
-            var parser = new JsonParser();
-            return parser.Parse(this, jsonSerializerSettings);
-        }
-        public string GetOfferXml()
-        {
-            var parser = new XMLParser();
-            return parser.Parse(this);
-        }
     }
 }

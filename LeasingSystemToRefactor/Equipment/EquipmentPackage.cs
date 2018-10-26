@@ -5,61 +5,32 @@ using System.Threading.Tasks;
 
 namespace LeasingSystemToRefactor.Equipment
 {
-    public class EquipmentPackage
+    public class EquipmentPackage : IEquipmentComponent
     {
         public int Id { get; set; }
         public string EquipmentPackageName { get; set; }
-        public List<EquipmentPackage> IncludedPackages { get; set; }
-        public List<EquipmentItem> IncludedItems { get; set; }
+        public List<IEquipmentComponent> EquipmentComponents { get; set; }
         public EquipmentPackage()
         {
-            IncludedPackages = new List<EquipmentPackage>();
-            IncludedItems = new List<EquipmentItem>();
+            EquipmentComponents = new List<IEquipmentComponent>();
         }
+
         public decimal GetPackagePrice()
         {
             var result = 0M;
-            foreach (var item in IncludedItems)
+            foreach (var component in EquipmentComponents)
             {
-                result += item.Price;
-            }
-            foreach (var package in IncludedPackages)
-            {
-                foreach (var item in package.IncludedItems)
-                {
-                    result += item.Price;
-                }
-                foreach (var packageInPackage in package.IncludedPackages)
-                {
-                    foreach (var item in packageInPackage.IncludedItems)
-                    {
-                        result += item.Price;
-                    }
-                }
+                result += component.GetPackagePrice();
             }
             return result;
-        }
+        }        
 
         public List<string> GetEquipmentList()
         {
             var result = new List<string>();
-            foreach (var item in IncludedItems)
+            foreach (var component in EquipmentComponents)
             {
-                result.Add(item.Name);
-            }
-            foreach (var package in IncludedPackages)
-            {
-                foreach (var item in package.IncludedItems)
-                {
-                    result.Add(item.Name);
-                }
-                foreach(var packageInPackage in package.IncludedPackages)
-                {
-                    foreach(var item in packageInPackage.IncludedItems)
-                    {
-                        result.Add(item.Name);
-                    }
-                }
+                result.AddRange(component.GetEquipmentList());
             }
             return result;
         }

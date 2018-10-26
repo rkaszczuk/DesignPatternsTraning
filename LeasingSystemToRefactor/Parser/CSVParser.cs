@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace LeasingSystemToRefactor.Parser
 {
-    public class CSVParser 
+    public class CSVParser : ISerializer
     {
         private string delimiter;
         public CSVParser(string delimiter)

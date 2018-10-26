@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LeasingSystemToRefactor.Equipment;
+using LeasingSystemToRefactor.Parser;
 using LeasingSystemToRefactor.Repositories;
 using LeasingSystemToRefactor.Vehicles;
 using Microsoft.AspNetCore.Http;
@@ -24,19 +25,24 @@ namespace LeasingSystemToRefactor.Controllers
         [HttpGet]
         public string GetOfferCsv(int Id)
         {
-            return offerRepository.GetActive().FirstOrDefault(x => x.Id == Id).GetOfferCSV("\t");
+            var offer = offerRepository.GetActive().FirstOrDefault(x => x.Id == Id);
+            SerializerFactory serializerFactory = new SerializerFactory();
+            return serializerFactory.GetSerializer(SerializerType.CsvTab).Parse(offer);
+            //return offerRepository.GetActive().FirstOrDefault(x => x.Id == Id).GetOfferCSV("\t");
         }
         [HttpGet]
         public string GetOfferJson(int Id)
-        {            
-            JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings();
-            jsonSerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-            return ObjectDbContext.Offers.Where(x => x.IsActive && x.IsCompleted).FirstOrDefault(x => x.Id == Id).GetOfferJson(jsonSerializerSettings);
+        {
+            var offer = offerRepository.GetActive().FirstOrDefault(x => x.Id == Id);
+            SerializerFactory serializerFactory = new SerializerFactory();
+            return serializerFactory.GetSerializer(SerializerType.Json).Parse(offer);
         }
         [HttpGet]
         public string GetOfferXml(int Id)
         {
-            return ObjectDbContext.Offers.Where(x => x.IsActive && x.IsCompleted).FirstOrDefault(x => x.Id == Id).GetOfferXml();
+            var offer = offerRepository.GetActive().FirstOrDefault(x => x.Id == Id);
+            SerializerFactory serializerFactory = new SerializerFactory();
+            return serializerFactory.GetSerializer(SerializerType.Xml).Parse(offer);
         }
         [HttpPost]
         public Offer CreateOffer(int vehicleId, int equipmentPackageId, string ccy, int numberOfMonths, decimal ownContribution)
