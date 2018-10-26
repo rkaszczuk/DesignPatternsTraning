@@ -18,40 +18,37 @@ namespace LeasingSystemToRefactor.Finance
         private int MaximumWeight { get; set; }
         private decimal VehicleValue { get; set; }
         private decimal OwnContributionValue { get; set; }
-
-        public LeasingPaymentsCalculator(decimal interestRate, int numberOfMonths, int numberOfDoors, int numberOfAxles, bool isTruck, int maximumWeight, decimal vehicleValue, decimal ownContributionValue)
+        private LeasingPaymentsCalculator()
         {
-            InterestRate = interestRate;
-            NumberOfMonths = numberOfMonths;
-            NumberOfDoors = numberOfDoors;
-            NumberOfAxles = numberOfAxles;
-            IsTruck = isTruck;
-            MaximumWeight = maximumWeight;
-            VehicleValue = vehicleValue;
-            OwnContributionValue = ownContributionValue;
+                
         }
-
-        public LeasingPaymentsCalculator(decimal interestRate, int numberOfMonths, int numberOfDoors, bool isTruck, decimal vehicleValue, decimal ownContributionValue)
+        public static LeasingPaymentsCalculator GetLeasingPaymentCalculatorForCar
+            (decimal interestRate, int numberOfMonths, int numberOfDoors, decimal vehicleValue, decimal ownContributionValue)
         {
-            InterestRate = interestRate;
-            NumberOfMonths = numberOfMonths;
-            NumberOfDoors = numberOfDoors;
-            IsTruck = isTruck;
-            VehicleValue = vehicleValue;
-            OwnContributionValue = ownContributionValue;
+            return new LeasingPaymentsCalculator()
+            {
+                InterestRate = interestRate,
+                NumberOfDoors = numberOfDoors,
+                NumberOfMonths = numberOfMonths,
+                IsTruck = false,
+                OwnContributionValue = ownContributionValue,
+                VehicleValue = vehicleValue
+            };
         }
-
-        public LeasingPaymentsCalculator(decimal interestRate, int numberOfMonths, int numberOfAxles, bool isTruck, int maximumWeight, decimal vehicleValue, decimal ownContributionValue)
+        public static LeasingPaymentsCalculator GetLeasingPaymentCalculatorForTruck
+            (decimal interestRate, int numberOfMonths, int numberOfAxles, int maximumWeight, decimal vehicleValue, decimal ownContributionValue)
         {
-            InterestRate = interestRate;
-            NumberOfMonths = numberOfMonths;
-            NumberOfAxles = numberOfAxles;
-            IsTruck = isTruck;
-            MaximumWeight = maximumWeight;
-            VehicleValue = vehicleValue;
-            OwnContributionValue = ownContributionValue;
+            return new LeasingPaymentsCalculator()
+            {
+                InterestRate = interestRate,
+                MaximumWeight = maximumWeight,
+                NumberOfAxles = numberOfAxles,
+                NumberOfMonths = numberOfMonths,
+                IsTruck = false,
+                OwnContributionValue = ownContributionValue,
+                VehicleValue = vehicleValue
+            };
         }
-
         public List<decimal> Calculate()
         {
             decimal riskFactor = 1;

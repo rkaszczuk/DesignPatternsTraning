@@ -11,8 +11,18 @@ namespace LeasingSystemToRefactor.Finance
         const decimal Wibor6MRate = 1.79M;
         const decimal Libor3MRate = -0.3509M;
         const decimal Libor6MRate = -0.3251M;
-
-        public decimal CalculateInterestRateNonPLN(decimal commission, int numberOfMonths)
+        public decimal CalculateInterestRate(string ccy, decimal commission, int numberOfMonths)
+        {
+            if (ccy == "PLN")
+            {
+                return CalculateInterestRatePLN(commission, numberOfMonths);
+            }
+            else
+            {
+                return CalculateInterestRateNonPLN(commission, numberOfMonths);
+            }
+        }
+        private decimal CalculateInterestRateNonPLN(decimal commission, int numberOfMonths)
         {
             if (numberOfMonths <= 3)
             {
@@ -24,7 +34,7 @@ namespace LeasingSystemToRefactor.Finance
             }
         }
 
-        public decimal CalculateInterestRatePLN(decimal commission, int numberOfMonths)
+        private decimal CalculateInterestRatePLN(decimal commission, int numberOfMonths)
         {
 
             if (numberOfMonths <= 3)

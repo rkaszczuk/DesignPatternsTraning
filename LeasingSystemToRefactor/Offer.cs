@@ -20,33 +20,22 @@ namespace LeasingSystemToRefactor
         public IVehicle Vehicle { get; set; }
         public EquipmentPackage EquipmentPackage { get; set; }
         public List<decimal> Payments { get; set; }
-        public string Ccy { get; set; }
-        public decimal Commission { get; set; }
-        public int NumberOfMonths { get; set; }
-        public decimal OwnContribution { get; set; }
+        public OfferFinancialDetails OfferFinancialDetails { get; set; }
         public void CalculatePayments()
         {
             var interestRateCalculator = new InterestRateCalculator();
-            var interestRate = 0M;
-            if(Ccy == "PLN")
-            {
-                interestRate = interestRateCalculator.CalculateInterestRatePLN(Commission, NumberOfMonths);
-            }
-            else
-            {
-                interestRate = interestRateCalculator.CalculateInterestRatePLN(Commission, NumberOfMonths);
-            }
+            var interestRate = interestRateCalculator.CalculateInterestRate(OfferFinancialDetails.Ccy, OfferFinancialDetails.Commission, OfferFinancialDetails.NumberOfMonths);
 
             if(Vehicle.GetType() == typeof(CarBase))
             {
                 var car = Vehicle as CarBase;
-                var leasingPaymentsCalculator = new LeasingPaymentsCalculator(interestRate, NumberOfMonths, car.NumberOfDoors, false, car.Price + EquipmentPackage.GetPackagePrice(), OwnContribution);
+                var leasingPaymentsCalculator = LeasingPaymentsCalculator.GetLeasingPaymentCalculatorForCar(interestRate, NumberOfMonths, car.NumberOfDoors, car.Price + EquipmentPackage.GetPackagePrice(), OwnContribution);
                 Payments = leasingPaymentsCalculator.Calculate();
             }
             else if(Vehicle.GetType() == typeof(TruckBase))
             {
                 var truck = Vehicle as TruckBase;
-                var leasingPaymentsCalculator = new LeasingPaymentsCalculator(interestRate, NumberOfMonths, truck.NumberOfAxles, true, truck.MaximumWeight, truck.Price + EquipmentPackage.GetPackagePrice(), OwnContribution);
+                var leasingPaymentsCalculator = LeasingPaymentsCalculator.GetLeasingPaymentCalculatorForTruck(interestRate, NumberOfMonths, truck.NumberOfAxles, truck.MaximumWeight, truck.Price + EquipmentPackage.GetPackagePrice(), OwnContribution);
                 Payments = leasingPaymentsCalculator.Calculate();
             }
         }
