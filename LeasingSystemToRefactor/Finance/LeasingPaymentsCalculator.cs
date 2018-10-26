@@ -75,7 +75,6 @@ namespace LeasingSystemToRefactor.Finance
 
             }
             
-            if()
 
             var totalPayment = VehicleValue * (1 + 12 / NumberOfMonths) * InterestRate * riskFactor;
             List<decimal> result = new List<decimal>();
