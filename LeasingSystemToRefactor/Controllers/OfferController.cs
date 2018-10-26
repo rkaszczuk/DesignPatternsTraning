@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LeasingSystemToRefactor.Equipment;
+using LeasingSystemToRefactor.Repositories;
 using LeasingSystemToRefactor.Vehicles;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,10 +16,15 @@ namespace LeasingSystemToRefactor.Controllers
     [ApiController]
     public class OfferController : ControllerBase
     {
+        private OfferRepository offerRepository;
+        public OfferController()
+        {
+            offerRepository = new OfferRepository();
+        }
         [HttpGet]
         public string GetOfferCsv(int Id)
         {
-            return ObjectDbContext.Offers.Where(x=>x.IsActive && x.IsCompleted).FirstOrDefault(x => x.Id == Id).GetOfferCSV("\t");
+            return offerRepository.GetActive().FirstOrDefault(x => x.Id == Id).GetOfferCSV("\t");
         }
         [HttpGet]
         public string GetOfferJson(int Id)
