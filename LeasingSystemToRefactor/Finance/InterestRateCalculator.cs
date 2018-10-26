@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace LeasingSystemToRefactor.Finance
 {
-    public class InterestRateCalculator
+    public class InterestRateCalculator : IInterestRateCalculator
     {
         const decimal Wibor3MRate = 1.72M;
         const decimal Wibor6MRate = 1.79M;

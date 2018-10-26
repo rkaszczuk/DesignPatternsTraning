@@ -49,6 +49,10 @@ namespace LeasingSystemToRefactor.Finance
                 VehicleValue = vehicleValue
             };
         }
+
+
+
+
         public List<decimal> Calculate()
         {
             decimal riskFactor = 1;

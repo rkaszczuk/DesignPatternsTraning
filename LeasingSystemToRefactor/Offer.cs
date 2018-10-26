@@ -21,21 +21,23 @@ namespace LeasingSystemToRefactor
         public EquipmentPackage EquipmentPackage { get; set; }
         public List<decimal> Payments { get; set; }
         public OfferFinancialDetails OfferFinancialDetails { get; set; }
+
         public void CalculatePayments()
         {
             var interestRateCalculator = new InterestRateCalculator();
             var interestRate = interestRateCalculator.CalculateInterestRate(OfferFinancialDetails.Ccy, OfferFinancialDetails.Commission, OfferFinancialDetails.NumberOfMonths);
+            
 
-            if(Vehicle.GetType() == typeof(CarBase))
+            if(Vehicle is CarBase)
             {
                 var car = Vehicle as CarBase;
-                var leasingPaymentsCalculator = LeasingPaymentsCalculator.GetLeasingPaymentCalculatorForCar(interestRate, NumberOfMonths, car.NumberOfDoors, car.Price + EquipmentPackage.GetPackagePrice(), OwnContribution);
+                var leasingPaymentsCalculator = LeasingPaymentsCalculator.GetLeasingPaymentCalculatorForCar(interestRate, OfferFinancialDetails.NumberOfMonths, car.NumberOfDoors, car.Price + EquipmentPackage.GetPackagePrice(), OfferFinancialDetails.OwnContribution);
                 Payments = leasingPaymentsCalculator.Calculate();
             }
             else if(Vehicle.GetType() == typeof(TruckBase))
             {
                 var truck = Vehicle as TruckBase;
-                var leasingPaymentsCalculator = LeasingPaymentsCalculator.GetLeasingPaymentCalculatorForTruck(interestRate, NumberOfMonths, truck.NumberOfAxles, truck.MaximumWeight, truck.Price + EquipmentPackage.GetPackagePrice(), OwnContribution);
+                var leasingPaymentsCalculator = LeasingPaymentsCalculator.GetLeasingPaymentCalculatorForTruck(interestRate, OfferFinancialDetails.NumberOfMonths, truck.NumberOfAxles, truck.MaximumWeight, truck.Price + EquipmentPackage.GetPackagePrice(), OfferFinancialDetails.OwnContribution);
                 Payments = leasingPaymentsCalculator.Calculate();
             }
         }
