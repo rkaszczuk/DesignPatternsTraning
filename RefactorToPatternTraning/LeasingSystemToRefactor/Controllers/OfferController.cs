@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LeasingSystemToRefactor.Equipment;
-using LeasingSystemToRefactor.Parser;
-using LeasingSystemToRefactor.Repositories;
 using LeasingSystemToRefactor.Vehicles;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,32 +15,22 @@ namespace LeasingSystemToRefactor.Controllers
     [ApiController]
     public class OfferController : ControllerBase
     {
-        private OfferRepository offerRepository;
-        public OfferController()
-        {
-            offerRepository = new OfferRepository();
-        }
         [HttpGet]
         public string GetOfferCsv(int Id)
         {
-            var offer = offerRepository.GetActive().FirstOrDefault(x => x.Id == Id);
-            SerializerFactory serializerFactory = new SerializerFactory();
-            return serializerFactory.GetSerializer(SerializerType.CsvTab).Parse(offer);
-            //return offerRepository.GetActive().FirstOrDefault(x => x.Id == Id).GetOfferCSV("\t");
+            return ObjectDbContext.Offers.Where(x=>x.IsActive && x.IsCompleted).FirstOrDefault(x => x.Id == Id).GetOfferCSV("\t");
         }
         [HttpGet]
         public string GetOfferJson(int Id)
-        {
-            var offer = offerRepository.GetActive().FirstOrDefault(x => x.Id == Id);
-            SerializerFactory serializerFactory = new SerializerFactory();
-            return serializerFactory.GetSerializer(SerializerType.Json).Parse(offer);
+        {            
+            JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings();
+            jsonSerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            return ObjectDbContext.Offers.Where(x => x.IsActive && x.IsCompleted).FirstOrDefault(x => x.Id == Id).GetOfferJson(jsonSerializerSettings);
         }
         [HttpGet]
         public string GetOfferXml(int Id)
         {
-            var offer = offerRepository.GetActive().FirstOrDefault(x => x.Id == Id);
-            SerializerFactory serializerFactory = new SerializerFactory();
-            return serializerFactory.GetSerializer(SerializerType.Xml).Parse(offer);
+            return ObjectDbContext.Offers.Where(x => x.IsActive && x.IsCompleted).FirstOrDefault(x => x.Id == Id).GetOfferXml();
         }
         [HttpPost]
         public Offer CreateOffer(int vehicleId, int equipmentPackageId, string ccy, int numberOfMonths, decimal ownContribution)

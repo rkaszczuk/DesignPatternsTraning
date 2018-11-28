@@ -5,20 +5,9 @@ using System.Threading.Tasks;
 
 namespace LeasingSystemToRefactor.Equipment
 {
-    public class EquipmentItem : IEquipmentComponent
+    public class EquipmentItem
     {
         public string Name { get; set; }
         public decimal Price { get; set; }
-
-        public List<string> GetEquipmentList()
-        {
-            return new List<string> { Name };
-        }
-
-        public decimal GetPackagePrice()
-        {
-            return Price;
-        }
-        
     }
 }

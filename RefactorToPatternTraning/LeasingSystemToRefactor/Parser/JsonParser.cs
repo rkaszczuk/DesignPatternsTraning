@@ -6,16 +6,11 @@ using Newtonsoft.Json;
 
 namespace LeasingSystemToRefactor.Parser
 {
-    public class JsonParser : ISerializer
+    public class JsonParser
     {
-        private JsonSerializerSettings serializerSettings;
-        public JsonParser(JsonSerializerSettings  jsonSerializerSettings)
+        public string Parse<T>(T obj, JsonSerializerSettings jsonSerializerSettings)
         {
-            serializerSettings = jsonSerializerSettings;
-        }
-        public string Parse<T>(T obj)
-        {
-            return JsonConvert.SerializeObject(obj, serializerSettings);
+            return JsonConvert.SerializeObject(obj, jsonSerializerSettings);
         }
     }
 }

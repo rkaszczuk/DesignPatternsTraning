@@ -20,27 +20,52 @@ namespace LeasingSystemToRefactor
         public IVehicle Vehicle { get; set; }
         public EquipmentPackage EquipmentPackage { get; set; }
         public List<decimal> Payments { get; set; }
-        public OfferFinancialDetails OfferFinancialDetails { get; set; }
-
+        public string Ccy { get; set; }
+        public decimal Commission { get; set; }
+        public int NumberOfMonths { get; set; }
+        public decimal OwnContribution { get; set; }
         public void CalculatePayments()
         {
             var interestRateCalculator = new InterestRateCalculator();
-            var interestRate = interestRateCalculator.CalculateInterestRate(OfferFinancialDetails.Ccy, OfferFinancialDetails.Commission, OfferFinancialDetails.NumberOfMonths);
-            
+            var interestRate = 0M;
+            if(Ccy == "PLN")
+            {
+                interestRate = interestRateCalculator.CalculateInterestRatePLN(Commission, NumberOfMonths);
+            }
+            else
+            {
+                interestRate = interestRateCalculator.CalculateInterestRatePLN(Commission, NumberOfMonths);
+            }
 
-            if(Vehicle is CarBase)
+            if(Vehicle.GetType() == typeof(CarBase))
             {
                 var car = Vehicle as CarBase;
-                var leasingPaymentsCalculator = LeasingPaymentsCalculator.GetLeasingPaymentCalculatorForCar(interestRate, OfferFinancialDetails.NumberOfMonths, car.NumberOfDoors, car.Price + EquipmentPackage.GetPackagePrice(), OfferFinancialDetails.OwnContribution);
+                var leasingPaymentsCalculator = new LeasingPaymentsCalculator(interestRate, NumberOfMonths, car.NumberOfDoors, false, car.Price + EquipmentPackage.GetPackagePrice(), OwnContribution);
                 Payments = leasingPaymentsCalculator.Calculate();
             }
             else if(Vehicle.GetType() == typeof(TruckBase))
             {
                 var truck = Vehicle as TruckBase;
-                var leasingPaymentsCalculator = LeasingPaymentsCalculator.GetLeasingPaymentCalculatorForTruck(interestRate, OfferFinancialDetails.NumberOfMonths, truck.NumberOfAxles, truck.MaximumWeight, truck.Price + EquipmentPackage.GetPackagePrice(), OfferFinancialDetails.OwnContribution);
+                var leasingPaymentsCalculator = new LeasingPaymentsCalculator(interestRate, NumberOfMonths, truck.NumberOfAxles, true, truck.MaximumWeight, truck.Price + EquipmentPackage.GetPackagePrice(), OwnContribution);
                 Payments = leasingPaymentsCalculator.Calculate();
             }
         }
         
+
+        public string GetOfferCSV(string delimiter)
+        {
+            var parser = new CSVParser(delimiter);
+            return parser.Parse(this);
+        }
+        public string GetOfferJson(JsonSerializerSettings jsonSerializerSettings)
+        {
+            var parser = new JsonParser();
+            return parser.Parse(this, jsonSerializerSettings);
+        }
+        public string GetOfferXml()
+        {
+            var parser = new XMLParser();
+            return parser.Parse(this);
+        }
     }
 }
